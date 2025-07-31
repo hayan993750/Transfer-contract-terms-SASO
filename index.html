@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>حاسبة مناقلات البنود - أيمز وساسو</title>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --aims-orange: #de735e;
+            --aims-orange-strong: #cc4a07;
+            --aims-green: #213a33;
+            --tbl-highlight-bg: #fff3ea;
+        }
+        body {
+            font-family: 'Almarai', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+            min-height: 100vh;
+        }
+        .top-bar {
+            background-color: var(--aims-green);
+            width: 100%;
+            padding: 20px 0 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 6px solid var(--aims-orange);
+            margin-bottom: 35px;
+        }
+        .top-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            width: 100%;
+            margin-bottom: 0;
+        }
+        .logo-img {
+            display: block;
+            background: transparent;
+        }
+        .logo-img.aims {
+            height: 60px;
+        }
+        .logo-img.saso {
+            height: 44px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 28px 20px 16px 20px;
+            border-radius: 18px;
+            box-shadow: 0 8px 24px 0 rgba(33,58,51,0.10), 0px 1.5px 4px 0 rgba(223,115,94,0.07);
+            margin-bottom: 36px;
+            transition: box-shadow 0.25s;
+        }
+        .container:hover {
+            box-shadow: 0 12px 32px 0 rgba(33,58,51,0.14), 0px 2px 7px 0 rgba(223,115,94,0.09);
+        }
+        h1 {
+            font-weight: 700;
+            color: var(--aims-green);
+            text-align: center;
+            margin-bottom: 5px;
+            letter-spacing: 0.7px;
+        }
+        h2 {
+            font-weight: 300;
+            color: var(--aims-orange);
+            text-align: center;
+            margin-top: 0;
+            font-size: 19px;
+        }
+        .calculator {
+            background-color: #e7ecef;
+            padding: 20px 18px 18px 18px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: 0 2.5px 10px rgba(33,58,51,0.07);
+            border: 2.5px solid var(--aims-green);
+            position: relative;
+            z-index: 3;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: var(--aims-green);
+        }
+        select, input[type="number"] {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            padding: 12px 10px;
+            border: 1.8px solid var(--aims-orange);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--aims-green);
+            font-size: 15.5px;
+            font-family: 'Almarai', sans-serif;
+            transition: border-color 0.2s;
+            margin-bottom: 2px;
+            display: block;
+        }
+        select:focus, input[type="number"]:focus {
+            border-color: var(--aims-green);
+            outline: none;
+        }
+        button {
+            background: linear-gradient(90deg, var(--aims-green) 65%, var(--aims-orange) 95%);
+            color: #fff;
+            border: none;
+            padding: 13px 36px;
+            border-radius: 28px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: 'Almarai', sans-serif;
+            font-weight: bold;
+            display: block;
+            margin: 22px auto 14px;
+            letter-spacing: 2px;
+            box-shadow: 0 3.5px 13px rgba(33,58,51,0.12);
+            transition: background 0.18s, transform 0.12s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, var(--aims-orange) 15%, var(--aims-green) 100%);
+            transform: translateY(-2px) scale(1.045);
+        }
+        .result {
+            background: linear-gradient(98deg, #f7faf9 38%, #f5ecec 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 22px;
+            border-right: 5px solid var(--aims-orange);
+            border-left: 5px solid var(--aims-green);
+            box-shadow: 0 1.5px 6px rgba(34,58,51,0.08);
+            font-size: 16px;
+            direction: rtl;
+            display: none;
+            animation: fadein 0.7s;
+        }
+        @keyframes fadein {
+            from { opacity:0; transform:scale(0.96); }
+            to { opacity:1; transform:scale(1); }
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: #fafbfb;
+            border-radius: 13px;
+            overflow: hidden;
+            font-size: 15px;
+            box-shadow: 0 2px 9px rgba(33,58,51,0.07);
+        }
+        th, td {
+            border: 1.6px solid #e2e3e8;
+            padding: 10px 8px;
+            text-align: center;
+            position: relative;
+            transition: background 0.16s;
+        }
+        th {
+            background-color: var(--aims-green);
+            color: #fff;
+            font-weight: 700;
+            font-size: 14.5px;
+            z-index: 1;
+        }
+        tr:nth-child(even) td {
+            background-color: #f4f8f6;
+        }
+        tr:nth-child(odd) td {
+            background-color: #f8f8f9;
+        }
+        tr td:first-child {
+            background-color: #ede7e3;
+            color: var(--aims-green);
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        /* تظليل الخلية التي بها الماوس فقط بدون خطوط جانبية */
+        .highlight-cell {
+            background: var(--tbl-highlight-bg) !important;
+            /* إزالة أي حدود إضافية */
+            border-color: var(--aims-orange-strong) !important;
+            box-shadow: inset 0 0 8px 1px rgba(222,115,94,0.4);
+            z-index: 2;
+        }
+        .note {
+            background-image: linear-gradient(94deg,#f7f6ed 70%,#ffe2d1 100%);
+            padding: 19px 15px 15px 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-right: 5px solid #ffc700;
+            font-size: 15px;
+            box-shadow: 0 2px 6px rgba(223,115,94,0.09);
+        }
+        .note h3 {
+            color: var(--aims-green);
+            margin-bottom: 7px;
+            font-size: 18px;
+        }
+        .note ul {
+            padding-right: 20px;
+        }
+        .valid {
+            color: #049085;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+        .invalid {
+            color: #d72e2e;
+            font-weight: bold;
+            font-size: 17.5px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-family: 'Almarai', 'Candara', sans-serif;
+            font-size: 15px;
+            color: #5d716a;
+            padding-bottom: 12px;
+        }
+        @media (max-width: 1000px) {
+            .container {
+                max-width: 97vw;
+                padding: 12px 7px 10px 7px;
+                border-radius: 10px;
+            }
+            .top-bar {
+                padding: 15px 0 13px;
+            }
+            .top-logos {
+                gap: 28px;
+            }
+        }
+        @media (max-width: 680px) {
+            .logo-img.aims, .logo-img.saso {
+                height: 42px !important;
+            }
+            .calculator {
+                padding: 11px 2.5vw;
+            }
+            h1 {
+                font-size: 21px;
+            }
+            h2 {
+                font-size: 16px;
+            }
+            .container {
+                padding: 9vw 3vw 3vw 2vw;
+            }
+            table {
+                font-size: 12px;
+            }
+            .top-bar {
+                padding: 11px 0 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="top-logos">
+            <img src="Aims Logo.jpeg" alt="AIMS Logo" class="logo-img aims" />
+            <img src="377824.png" alt="SASO Logo" class="logo-img saso" />
+        </div>
+    </div>
+    <div class="container">
+        <h1>حاسبة مناقلات البنود</h1>
+        <h2>مشروع تطوير الكوادر البشرية لمنظومة سلامة المنتجات التابع لمبادرة إطلاق البرنامج السعودي لسلامة المنتجات</h2>
+        <div class="calculator">
+            <div class="form-group">
+                <label for="programType">نوع البرنامج المطلوب:</label>
+                <select id="programType">
+                    <option value="">-- اختر نوع البرنامج --</option>
+                    <option value="1722.53">إداري داخلي (1,722.53 ريال/مقعد)</option>
+                    <option value="2929.40">إداري خارجي (2,929.40 ريال/مقعد)</option>
+                    <option value="2358.29">فني داخلي (2,358.29 ريال/مقعد)</option>
+                    <option value="3988.88">فني خارجي (3,988.88 ريال/مقعد)</option>
+                    <option value="4600">قيادي داخلي (4,600 ريال/مقعد)</option>
+                    <option value="6191.50">قيادي خارجي (6,191.50 ريال/مقعد)</option>
+                    <option value="4600">تقني داخلي (4,600 ريال/مقعد)</option>
+                    <option value="5350.38">تقني خارجي (5,350.38 ريال/مقعد)</option>
+                    <option value="3638.82">إنجليزي داخلي (3,638.82 ريال/مقعد)</option>
+                    <option value="22126">إنجليزي خارجي (22,126 ريال/مقعد)</option>
+                    <option value="2415.58">شهادات مهنية (2,415.58 ريال/مقعد)</option>
+                    <option value="1024.65">توجيه شخصي (1,024.65 ريال/مقعد)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="seatsNumber">عدد المقاعد المطلوبة (حسب قاعدة 25/15):</label>
+                <input type="number" id="seatsNumber" min="1" value="25" />
+            </div>
+            <div class="form-group">
+                <label for="sourceItem">البند البديل (المصدر) لاستخدام رصيده:</label>
+                <select id="sourceItem">
+                    <option value="">-- اختر البند البديل --</option>
+                    <option value="1722.53">إداري داخلي (1,722.53 ريال/مقعد)</option>
+                    <option value="2929.40">إداري خارجي (2,929.40 ريال/مقعد)</option>
+                    <option value="2358.29">فني داخلي (2,358.29 ريال/مقعد)</option>
+                    <option value="3988.88">فني خارجي (3,988.88 ريال/مقعد)</option>
+                    <option value="4600">قيادي داخلي (4,600 ريال/مقعد)</option>
+                    <option value="6191.50">قيادي خارجي (6,191.50 ريال/مقعد)</option>
+                    <option value="4600">تقني داخلي (4,600 ريال/مقعد)</option>
+                    <option value="5350.38">تقني خارجي (5,350.38 ريال/مقعد)</option>
+                    <option value="3638.82">إنجليزي داخلي (3,638.82 ريال/مقعد)</option>
+                    <option value="22126">إنجليزي خارجي (22,126 ريال/مقعد)</option>
+                    <option value="2415.58">شهادات مهنية (2,415.58 ريال/مقعد)</option>
+                    <option value="1024.65">توجيه شخصي (1,024.65 ريال/مقعد)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="currentBalance">الرصيد الحالي للبند البديل (عدد المقاعد):</label>
+                <input type="number" id="currentBalance" min="0" value="0" />
+            </div>
+            <button onclick="calculateTransfer()">احتساب المناقلة</button>
+            <div id="result" class="result"></div>
+        </div>
+        <h2>جدول المناقلات الكامل بين البنود</h2>
+        <p>يوضح الجدول كل بند وما يعدله من مقاعد مع بند آخر</p>
+        <div style="overflow-x:auto;">
+            <table id="transferTable">
+                <thead>
+                    <tr>
+                        <th>البند الفائض (مصدر) ↓ / البند الناقص (هدف) →</th>
+                        <th>إداري داخلي<br />(1,722.53)</th>
+                        <th>إداري خارجي<br />(2,929.40)</th>
+                        <th>فني داخلي<br />(2,358.29)</th>
+                        <th>فني خارجي<br />(3,988.88)</th>
+                        <th>قيادي داخلي<br />(4,600)</th>
+                        <th>قيادي خارجي<br />(6,191.50)</th>
+                        <th>تقني داخلي<br />(4,600)</th>
+                        <th>تقني خارجي<br />(5,350.38)</th>
+                        <th>إنجليزي داخلي<br />(3,638.82)</th>
+                        <th>إنجليزي خارجي<br />(22,126)</th>
+                        <th>شهادات مهنية<br />(2,415.58)</th>
+                        <th>توجيه شخصي<br />(1,024.65)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">إداري داخلي (1,722.53)</td>
+                        <td>-</td>
+                        <td>0.59</td>
+                        <td>0.73</td>
+                        <td>0.43</td>
+                        <td>0.37</td>
+                        <td>0.28</td>
+                        <td>0.37</td>
+                        <td>0.32</td>
+                        <td>0.47</td>
+                        <td>0.08</td>
+                        <td>0.71</td>
+                        <td>1.68</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">إداري خارجي (2,929.40)</td>
+                        <td>1.70</td>
+                        <td>-</td>
+                        <td>1.24</td>
+                        <td>0.73</td>
+                        <td>0.64</td>
+                        <td>0.47</td>
+                        <td>0.64</td>
+                        <td>0.55</td>
+                        <td>0.80</td>
+                        <td>0.13</td>
+                        <td>1.21</td>
+                        <td>2.86</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">فني داخلي (2,358.29)</td>
+                        <td>1.37</td>
+                        <td>0.81</td>
+                        <td>-</td>
+                        <td>0.59</td>
+                        <td>0.51</td>
+                        <td>0.38</td>
+                        <td>0.51</td>
+                        <td>0.44</td>
+                        <td>0.65</td>
+                        <td>0.11</td>
+                        <td>0.98</td>
+                        <td>2.30</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">فني خارجي (3,988.88)</td>
+                        <td>2.32</td>
+                        <td>1.36</td>
+                        <td>1.69</td>
+                        <td>-</td>
+                        <td>0.87</td>
+                        <td>0.64</td>
+                        <td>0.87</td>
+                        <td>0.75</td>
+                        <td>1.10</td>
+                        <td>0.18</td>
+                        <td>1.65</td>
+                        <td>3.89</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">قيادي داخلي (4,600)</td>
+                        <td>2.67</td>
+                        <td>1.57</td>
+                        <td>1.95</td>
+                        <td>1.15</td>
+                        <td>-</td>
+                        <td>0.74</td>
+                        <td>1.00</td>
+                        <td>0.86</td>
+                        <td>1.26</td>
+                        <td>0.21</td>
+                        <td>1.90</td>
+                        <td>4.49</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">قيادي خارجي (6,191.50)</td>
+                        <td>3.59</td>
+                        <td>2.11</td>
+                        <td>2.63</td>
+                        <td>1.55</td>
+                        <td>1.35</td>
+                        <td>-</td>
+                        <td>1.35</td>
+                        <td>1.16</td>
+                        <td>1.70</td>
+                        <td>0.28</td>
+                        <td>2.56</td>
+                        <td>6.04</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">تقني خارجي (5,350.38)</td>
+                        <td>3.11</td>
+                        <td>1.83</td>
+                        <td>2.27</td>
+                        <td>1.34</td>
+                        <td>1.16</td>
+                        <td>0.86</td>
+                        <td>1.16</td>
+                        <td>-</td>
+                        <td>1.47</td>
+                        <td>0.24</td>
+                        <td>2.21</td>
+                        <td>5.22</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">إنجليزي داخلي (3,638.82)</td>
+                        <td>2.11</td>
+                        <td>1.24</td>
+                        <td>1.54</td>
+                        <td>0.91</td>
+                        <td>0.79</td>
+                        <td>0.59</td>
+                        <td>0.79</td>
+                        <td>0.68</td>
+                        <td>-</td>
+                        <td>0.16</td>
+                        <td>1.51</td>
+                        <td>3.55</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">إنجليزي خارجي (22,126)</td>
+                        <td>12.84</td>
+                        <td>7.55</td>
+                        <td>9.38</td>
+                        <td>5.55</td>
+                        <td>4.81</td>
+                        <td>3.57</td>
+                        <td>4.81</td>
+                        <td>4.14</td>
+                        <td>6.08</td>
+                        <td>-</td>
+                        <td>9.16</td>
+                        <td>21.59</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">شهادات مهنية (2,415.58)</td>
+                        <td>1.40</td>
+                        <td>0.82</td>
+                        <td>1.03</td>
+                        <td>0.61</td>
+                        <td>0.53</td>
+                        <td>0.39</td>
+                        <td>0.53</td>
+                        <td>0.45</td>
+                        <td>0.66</td>
+                        <td>0.11</td>
+                        <td>-</td>
+                        <td>2.36</td>
+                    </tr>
+                    <tr>
+                        <td class="row-title" style="font-weight:bold">توجيه شخصي (1,024.65)</td>
+                        <td>0.59</td>
+                        <td>0.35</td>
+                        <td>0.43</td>
+                        <td>0.26</td>
+                        <td>0.22</td>
+                        <td>0.17</td>
+                        <td>0.22</td>
+                        <td>0.19</td>
+                        <td>0.28</td>
+                        <td>0.05</td>
+                        <td>0.42</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="note">
+            <h3>ملاحظات مهمة:</h3>
+            <ul>
+                <li>طريقة الحساب الصحيحة: (سعر البند الناقص × عدد المقاعد) ÷ سعر البند الفائض</li>
+                <li>يتم تقريب الأرقام حسب النظام التالي: 0.5 وما فوق يصبح 1، وأقل من 0.5 يحذف الكسر</li>
+                <li>الأسعار المعتمدة هي الأسعار المتفق عليها مع ساسو لكل بند</li>
+                <li>يجب توثيق كل عملية مناقلة بين أيمز وساسو عبر البروتوكول المتفق عليه</li>
+            </ul>
+        </div>
+        <div class="footer">
+            Created by Dr. Hayan Saffan | AIME Training Center | Copy Rights 2025-2026
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            const table = document.getElementById('transferTable');
+            if (!table) return;
+            const tbody = table.querySelector("tbody");
+            let lastHighlightedCell = null;
+
+            tbody.querySelectorAll('td').forEach(cell => {
+                cell.addEventListener('mouseenter', function() {
+                    if(cell.cellIndex === 0) return; // تجاهل أول عمود (عنوانين الصفوف)
+                    if (lastHighlightedCell) {
+                        lastHighlightedCell.classList.remove('highlight-cell');
+                    }
+                    cell.classList.add('highlight-cell');
+                    lastHighlightedCell = cell;
+                });
+                cell.addEventListener('mouseleave', function(){
+                    if(lastHighlightedCell) {
+                        lastHighlightedCell.classList.remove('highlight-cell');
+                        lastHighlightedCell = null;
+                    }
+                });
+            });
+        })();
+    </script>
+
+<script>
+    // كود الحاسبة كما هو تماما بدون تغيير
+    function calculateTransfer() {
+        const programType = document.getElementById("programType").value;
+        const seatsNumber = parseInt(document.getElementById("seatsNumber").value);
+        const sourceItem = document.getElementById("sourceItem").value;
+        const currentBalance = parseInt(document.getElementById("currentBalance").value);
+        if (!programType || !seatsNumber || !sourceItem) {
+            alert("الرجاء اختيار جميع الحقول المطلوبة");
+            return;
+        }
+        if (programType === sourceItem) {
+            alert("لا يمكن اختيار نفس البند كبند مطلوب وبند بديل");
+            return;
+        }
+        const programCost = parseFloat(programType) * seatsNumber;
+        const sourceItemPrice = parseFloat(sourceItem);
+        const exactSeats = programCost / sourceItemPrice;
+        const roundedSeats = Math.round(exactSeats);
+        const actualCost = roundedSeats * sourceItemPrice;
+        const hasSufficientBalance = currentBalance >= roundedSeats;
+        const programName = document.getElementById("programType").options[document.getElementById("programType").selectedIndex].text;
+        const sourceName = document.getElementById("sourceItem").options[document.getElementById("sourceItem").selectedIndex].text;
+        const resultDiv = document.getElementById("result");
+        resultDiv.style.display = "block";
+        let resultHTML = `
+            <h3>نتيجة الاحتساب:</h3>
+            <p><strong>نوع البرنامج:</strong> ${programName}</p>
+            <p><strong>عدد المقاعد المطلوبة:</strong> ${seatsNumber} مقعد</p>
+            <p><strong>التكلفة الإجمالية للبرنامج:</strong> ${programCost.toLocaleString()} ريال</p>
+            <p><strong>البند البديل المستخدم:</strong> ${sourceName}</p>
+            <p><strong>سعر المقعد في البند البديل:</strong> ${sourceItemPrice.toLocaleString()} ريال</p>
+            <p><strong>العدد الدقيق للمقاعد المنقولة:</strong> ${exactSeats.toFixed(2)} مقعد</p>
+            <p><strong>العدد بعد التقريب:</strong> ${roundedSeats} مقعد</p>
+            <p><strong>التكلفة الفعلية بعد التقريب:</strong> ${actualCost.toLocaleString()} ريال</p>
+            <p><strong>الفرق بين التكلفتين:</strong> ${(actualCost - programCost).toLocaleString()} ريال</p>
+            <p><strong>الرصيد الحالي للبند البديل:</strong> ${currentBalance} مقعد</p>
+        `;
+        if (hasSufficientBalance) {
+            resultHTML += `
+                <p class="valid">✓ الرصيد كافي لخصم ${roundedSeats} مقعد من ${sourceName.split(" (")[0]}</p>
+                <p><strong>الرصيد المتبقي بعد الخصم:</strong> ${currentBalance - roundedSeats} مقعد</p>
+            `;
+        } else {
+            resultHTML += `
+                <p class="invalid">✗ الرصيد غير كافي (تحتاج ${roundedSeats} مقعد، المتوفر ${currentBalance})</p>
+            `;
+        }
+        resultDiv.innerHTML = resultHTML;
+    }
+</script>
+</body>
+</html>
